@@ -1,6 +1,5 @@
-# Morpion-IA---AMNESia-Lab
-Morpion IA 
+# Projet Morpion IA
+Nous avons créé un Morpion ( ou Tic Tac Toe ) en langage Python.
 
-Algo minmiax blabla
+Il est doté d’un mode solo contre l’ordinateur, qui est programmé pour jouer intelligemment ( Utilisation de l’algorithme MiniMax )
 
-Amnesia Lab
