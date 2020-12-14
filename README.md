@@ -1,7 +1,7 @@
-# Projet Morpion IA
-Nous avons créé un Morpion ( ou Tic Tac Toe ) en langage Python.
+# TIC-TAC-TOE (Morpion) IA
 
-Il est doté d’un mode solo contre l’ordinateur, qui est programmé pour jouer intelligemment ( Utilisation de l’algorithme MiniMax )
+We built a Connect 4 game using python.
+It has a "human vs. computer" mode, which is programmed to play smart (using the MiniMax algorithm).
 
 2020.
 
