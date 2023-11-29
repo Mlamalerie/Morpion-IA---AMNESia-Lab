@@ -77,29 +77,25 @@ Terminal_Test(grille)
 
 
 def Utility(g):
-    findejeu,gagnant,caserestante=Terminal_Test(g)
-    global jIa,jHumain
-    if findejeu:
-        if gagnant == jIa:
-            val = 1 + caserestante
-        elif gagnant == jHumain:
-            val = -1 * (1 + caserestante)
-        else:
-            val = 0
-        return val
+	findejeu,gagnant,caserestante=Terminal_Test(g)
+	global jIa,jHumain
+	if findejeu:
+		if gagnant == jIa:
+			return 1 + caserestante
+		elif gagnant == jHumain:
+			return -1 * (1 + caserestante)
+		else:
+			return 0
 
 
 def Actions(g): 
                  
-    #s Si le jeu n'est pas fini    
-    if Terminal_Test(g)[0] == False:
-        actions=[] 
-        for i in range(3):
-            for j in range(3):
-                if (g[i][j] == 0): # si la case est vide
-                    actions.append((i,j))
-    
-        return actions
+	    #s Si le jeu n'est pas fini
+	if Terminal_Test(g)[0] == False:
+		actions=[]
+		for i in range(3):
+			actions.extend((i, j) for j in range(3) if (g[i][j] == 0))
+		return actions
 Actions(grille)
 
 def Result(g,pos):   #place un element à la position pos dans la grille g
@@ -125,13 +121,13 @@ def min_max_value(grille, prof, maxi):
 	kkk += 1
 	if Terminal_Test(grille)[0]: # si l'etat du jeu est une partie fini alors
 		return Utility(grille)
-    
+
 #	print("-- *mmvalue* MAXI {} // PROF {} // TERMINAL-TEST {} // UTILITY {}".format(maxi, prof,Terminal_Test(grille)[0],Utility(grille)))
 	if maxi:
 		meilleurscore=-1000
-		
+
 		actionspossible = Actions(grille)
-		
+
 		#print("...",actionspossible)
 		for (i,j) in actionspossible:
 			grille[i][j]=jIa
@@ -141,8 +137,6 @@ def min_max_value(grille, prof, maxi):
 			grille[i][j] = 0
 			meilleurscore = max([score,meilleurscore])
 			#print("##################### *mmvalue* SCORE {}".format(meilleurscore))
-		return meilleurscore
-	
 	else:
 		meilleurscore = 1000
 		for i in range(3):
@@ -152,7 +146,8 @@ def min_max_value(grille, prof, maxi):
 					score = min_max_value(grille, prof+1, True)
 					grille[i][j]=0
 					meilleurscore = min([score,meilleurscore])
-		return meilleurscore
+
+	return meilleurscore
 
 min_max_value(grille, 100, True)
 
@@ -174,66 +169,64 @@ def MiniMax_Decision(grille):
 
 def Jeu(g):
     
-    global currentplayer, grille, score1,score2,nbparties
+	global currentplayer, grille, score1,score2,nbparties
 	# Si GAME OVER
-    if (Terminal_Test(g)[0]==True and Actions(g)==None):
-        nbparties += 1
-        print( " ----------------------- fin de partie -- Nb de Parties : {}".format(nbparties))
-        
-        winneur = Terminal_Test(g)[1]
-        if (winneur == 1):
-            text = ' > Ia gagne !'
-            score1 += 1
-        elif (winneur == 2):
-            text = ' > Vous avez gagnez '
-            score2 += 1
-        else:
-            winneur = currentplayer
-            text = ' > match nul'
-	   
-        print(text)
+	if Terminal_Test(g)[0] == True and Actions(g) is None:
+		nbparties += 1
+		print(f" ----------------------- fin de partie -- Nb de Parties : {nbparties}")
 
-        print("Score de l'ia : ", score1)
-        print("Score du joueur : ", score2)
-        print()
-        choix = -5
-        while (choix!=1 and choix!=0):
-            choix=int(input("Voulez-vous rejouer ? \n (0 : NON)  (1 : OUI) : "))
+		winneur = Terminal_Test(g)[1]
+		if (winneur == 1):
+		    text = ' > Ia gagne !'
+		    score1 += 1
+		elif (winneur == 2):
+		    text = ' > Vous avez gagnez '
+		    score2 += 1
+		else:
+		    winneur = currentplayer
+		    text = ' > match nul'
 
-        if choix==1:
-            print('\n ************************************* \n')
-            grille = np.zeros((3,3))
-            currentplayer=winneur
-            if currentplayer == jHumain:
-                 AfficherGrille(grille)
-            Jeu(grille)
-        else:
-            return print("Merci à la prochaine !")
-        
-	# 
-    elif (Terminal_Test(g)[0]!=True) :
-        if currentplayer == jIa:
-            print("\n ia joue...")
-            g=MiniMax_Decision(grille)
-            #s=MiniMax_Decision_AB()
-            print(" ----------------------- ia a joué.")
-            AfficherGrille(g)
-            Jeu(g)
-            
-        if currentplayer == jHumain:
-            #print("KKK",kkk)
-            l=Actions(g)
-            if l!=None:
-                print('Actions possibles : ' + str(l))
-                a=int(input('choix coord 1 : '))
-                b=int(input('choix coord 2 : '))
-                while(((a,b) not in l ) or (type(a) != int) or (type(b) != int)):
-                    print("Oops, vos coordonnées ne sont pas valides... Try again !")
-                    a=int(input('choix coord 1 : '))
-                    b=int(input('choix coord 2 : ')) 
-                Result(g,(a,b))
-                currentplayer=jIa
-                Jeu(g)
+		print(text)
+
+		print("Score de l'ia : ", score1)
+		print("Score du joueur : ", score2)
+		print()
+		choix = -5
+		while choix not in [1, 0]:
+			choix=int(input("Voulez-vous rejouer ? \n (0 : NON)  (1 : OUI) : "))
+
+		if choix != 1:
+			return print("Merci à la prochaine !")
+
+		print('\n ************************************* \n')
+		grille = np.zeros((3,3))
+		currentplayer=winneur
+		if currentplayer == jHumain:
+		     AfficherGrille(grille)
+		Jeu(grille)
+	elif (Terminal_Test(g)[0]!=True):
+		if currentplayer == jIa:
+		    print("\n ia joue...")
+		    g=MiniMax_Decision(grille)
+		    #s=MiniMax_Decision_AB()
+		    print(" ----------------------- ia a joué.")
+		    AfficherGrille(g)
+		    Jeu(g)
+
+		if currentplayer == jHumain:
+			#print("KKK",kkk)
+			l=Actions(g)
+			if l!=None:
+				print(f'Actions possibles : {str(l)}')
+				a=int(input('choix coord 1 : '))
+				b=int(input('choix coord 2 : '))
+				while(((a,b) not in l ) or (type(a) != int) or (type(b) != int)):
+				    print("Oops, vos coordonnées ne sont pas valides... Try again !")
+				    a=int(input('choix coord 1 : '))
+				    b=int(input('choix coord 2 : '))
+				Result(g,(a,b))
+				currentplayer=jIa
+				Jeu(g)
                 
                 
 print('**** PUISSANCE 4 - HUMAN vs IA ****')
